@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PelangganController extends Controller
 {
@@ -29,33 +30,53 @@ class PelangganController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'birthday' => 'required|date',
-            'gender' => 'required|in:Male,Female',
-            'email' => 'required|email',
-            'phone' => 'required|numeric',
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:Male,Female,Other',
+            'email' => 'required|email|unique:pelanggan,email',
+            'phone' => 'nullable|string|max:20',
+            'title' => 'nullable|string|max:255',
+            'bio' => 'nullable|string',
+            'about' => 'nullable|string',
+            'address' => 'nullable|string|max:255',
+            'behance_url' => 'nullable|string|max:255',
+            'dribbble_url' => 'nullable|string|max:255',
+            'instagram_url' => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|string|max:255',
+            'skills' => 'nullable|string',
+            'services' => 'nullable|string',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
-        $data['first_name'] = $request->first_name;
-        $data['last_name'] = $request->last_name;
-        $data['birthday'] = $request->birthday;
-        $data['gender'] = $request->gender;
-        $data['email'] = $request->email;
-        $data['phone'] = $request->phone;
+        if ($request->hasFile('profile_image')) {
+            $validated['profile_image'] = $request->file('profile_image')->store('pelanggan/profiles', 'public');
+        }
 
-        Pelanggan::create($data);
+        if ($request->hasFile('banner_image')) {
+            $validated['banner_image'] = $request->file('banner_image')->store('pelanggan/banners', 'public');
+        }
+
+        if ($request->hasFile('cv_file')) {
+            $validated['cv_file'] = $request->file('cv_file')->store('pelanggan/cvs', 'public');
+        }
+
+        Pelanggan::create($validated);
 
         return redirect()->route('pelanggan.index')->with('success', 'Penambahan Data Berhasil!');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource (Halaman Portofolio).
      */
     public function show(string $id)
     {
-        //
+        $pelanggan = Pelanggan::findOrFail($id);
+        $allPelanggan = Pelanggan::all(); // untuk tabel data di bagian bawah portofolio
+        return view('admin.pelanggan.portfolio', compact('pelanggan', 'allPelanggan'));
     }
 
     /**
@@ -72,26 +93,52 @@ class PelangganController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'birthday' => 'required|date',
-            'gender' => 'required|in:Male,Female',
-            'email' => 'required|email',
-            'phone' => 'required|numeric',
+        $pelanggan = Pelanggan::findOrFail($id);
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:Male,Female,Other',
+            'email' => 'required|email|unique:pelanggan,email,' . $id . ',pelanggan_id',
+            'phone' => 'nullable|string|max:20',
+            'title' => 'nullable|string|max:255',
+            'bio' => 'nullable|string',
+            'about' => 'nullable|string',
+            'address' => 'nullable|string|max:255',
+            'behance_url' => 'nullable|string|max:255',
+            'dribbble_url' => 'nullable|string|max:255',
+            'instagram_url' => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|string|max:255',
+            'skills' => 'nullable|string',
+            'services' => 'nullable|string',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
-        $pelanggan_id = $id;
-        $pelanggan = Pelanggan::findOrFail($pelanggan_id);
+        if ($request->hasFile('profile_image')) {
+            if ($pelanggan->profile_image && Storage::disk('public')->exists($pelanggan->profile_image)) {
+                Storage::disk('public')->delete($pelanggan->profile_image);
+            }
+            $validated['profile_image'] = $request->file('profile_image')->store('pelanggan/profiles', 'public');
+        }
 
-        $pelanggan->first_name = $request->first_name;
-        $pelanggan->last_name = $request->last_name;
-        $pelanggan->birthday = $request->birthday;
-        $pelanggan->gender = $request->gender;
-        $pelanggan->email = $request->email;
-        $pelanggan->phone = $request->phone;
+        if ($request->hasFile('banner_image')) {
+            if ($pelanggan->banner_image && Storage::disk('public')->exists($pelanggan->banner_image)) {
+                Storage::disk('public')->delete($pelanggan->banner_image);
+            }
+            $validated['banner_image'] = $request->file('banner_image')->store('pelanggan/banners', 'public');
+        }
 
-        $pelanggan->save();
+        if ($request->hasFile('cv_file')) {
+            if ($pelanggan->cv_file && Storage::disk('public')->exists($pelanggan->cv_file)) {
+                Storage::disk('public')->delete($pelanggan->cv_file);
+            }
+            $validated['cv_file'] = $request->file('cv_file')->store('pelanggan/cvs', 'public');
+        }
+
+        $pelanggan->update($validated);
 
         return redirect()->route('pelanggan.index')->with('success', 'Perubahan Data Berhasil!');
     }
@@ -102,6 +149,17 @@ class PelangganController extends Controller
     public function destroy(string $id)
     {
         $pelanggan = Pelanggan::findOrFail($id);
+
+        if ($pelanggan->profile_image && Storage::disk('public')->exists($pelanggan->profile_image)) {
+            Storage::disk('public')->delete($pelanggan->profile_image);
+        }
+        if ($pelanggan->banner_image && Storage::disk('public')->exists($pelanggan->banner_image)) {
+            Storage::disk('public')->delete($pelanggan->banner_image);
+        }
+        if ($pelanggan->cv_file && Storage::disk('public')->exists($pelanggan->cv_file)) {
+            Storage::disk('public')->delete($pelanggan->cv_file);
+        }
+
         $pelanggan->delete();
 
         return redirect()->route('pelanggan.index')->with('success', 'Data berhasil dihapus');

@@ -15,5 +15,23 @@ class Pelanggan extends Model
         'gender',
         'email',
         'phone',
+        'profile_image',
+        'banner_image',
+        'title',
+        'bio',
+        'about',
+        'address',
+        'behance_url',
+        'dribbble_url',
+        'instagram_url',
+        'linkedin_url',
+        'cv_file',
+        'skills',
+        'services',
     ];
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }

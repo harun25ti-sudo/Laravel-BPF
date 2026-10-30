@@ -294,14 +294,14 @@ Logout
     </div>
 @endif
 
-<form action="{{ route('pelanggan.update', $dataPelanggan->pelanggan_id) }}" method="POST">
+<form action="{{ route('pelanggan.update', $dataPelanggan->pelanggan_id) }}" method="POST" enctype="multipart/form-data">
 @csrf
 @method('PUT')
 <div class="row mb-4">
 <div class="col-lg-4 col-sm-6">
 <!-- First Name -->
 <div class="mb-3">
-<label for="first_name" class="form-label">First name</label>
+<label for="first_name" class="form-label">First name <span class="text-danger">*</span></label>
 <input type="text" id="first_name" name="first_name" class="form-control @error('first_name') is-invalid @enderror" value="{{ old('first_name', $dataPelanggan->first_name) }}" required>
 @error('first_name')
     <div class="invalid-feedback">{{ $message }}</div>
@@ -309,13 +309,30 @@ Logout
 </div>
 <!-- Last Name -->
 <div class="mb-3">
-<label for="last_name" class="form-label">Last name</label>
+<label for="last_name" class="form-label">Last name <span class="text-danger">*</span></label>
 <input type="text" id="last_name" name="last_name" class="form-control @error('last_name') is-invalid @enderror" value="{{ old('last_name', $dataPelanggan->last_name) }}" required>
 @error('last_name')
     <div class="invalid-feedback">{{ $message }}</div>
 @enderror
 </div>
+<!-- Profession / Title -->
+<div class="mb-3">
+<label for="title" class="form-label">Profesi / Judul Portofolio</label>
+<input type="text" id="title" name="title" class="form-control @error('title') is-invalid @enderror" placeholder="Contoh: UI/UX Designer & Creative Director" value="{{ old('title', $dataPelanggan->title) }}">
+@error('title')
+    <div class="invalid-feedback">{{ $message }}</div>
+@enderror
 </div>
+<!-- Services / Badges -->
+<div class="mb-3">
+<label for="services" class="form-label">Layanan / Spesialisasi (Pisahkan dg koma)</label>
+<input type="text" id="services" name="services" class="form-control @error('services') is-invalid @enderror" placeholder="Contoh: UI/UX Design, Photographer, Freelancer, Graphic Design" value="{{ old('services', $dataPelanggan->services) }}">
+@error('services')
+    <div class="invalid-feedback">{{ $message }}</div>
+@enderror
+</div>
+</div>
+
 <div class="col-lg-4 col-sm-6">
 <!-- Birthday -->
 <div class="mb-3">
@@ -338,12 +355,29 @@ Logout
     <div class="invalid-feedback">{{ $message }}</div>
 @enderror
 </div>
+<!-- Skills -->
+<div class="mb-3">
+<label for="skills" class="form-label">Keahlian (Skills & %)</label>
+<input type="text" id="skills" name="skills" class="form-control @error('skills') is-invalid @enderror" placeholder="Photoshop:85%, Illustrator:90%, Figma:95%, Web Design:80%" value="{{ old('skills', $dataPelanggan->skills) }}">
+@error('skills')
+    <div class="invalid-feedback">{{ $message }}</div>
+@enderror
 </div>
+<!-- Address -->
+<div class="mb-3">
+<label for="address" class="form-label">Alamat / Lokasi</label>
+<input type="text" id="address" name="address" class="form-control @error('address') is-invalid @enderror" placeholder="Contoh: Jakarta, Indonesia" value="{{ old('address', $dataPelanggan->address) }}">
+@error('address')
+    <div class="invalid-feedback">{{ $message }}</div>
+@enderror
+</div>
+</div>
+
 <div class="col-lg-4 col-sm-12">
 <!-- Email -->
 <div class="mb-3">
-<label for="email" class="form-label">Email</label>
-<input type="text" id="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $dataPelanggan->email) }}" required>
+<label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+<input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $dataPelanggan->email) }}" required>
 @error('email')
     <div class="invalid-feedback">{{ $message }}</div>
 @enderror
@@ -356,11 +390,101 @@ Logout
     <div class="invalid-feedback">{{ $message }}</div>
 @enderror
 </div>
-<!-- Buttons -->
-<div class="">
-<button type="submit" class="btn btn-info">Simpan Perubahan</button>
-<a href="{{ route('pelanggan.index') }}" class="btn btn-outline-secondary ms-2">Batal</a>
+<!-- CV File Upload -->
+<div class="mb-3">
+<label for="cv_file" class="form-label">Upload CV / Resume (PDF/DOC)</label>
+<input type="file" id="cv_file" name="cv_file" class="form-control @error('cv_file') is-invalid @enderror">
+@if($dataPelanggan->cv_file)
+    <div class="form-text text-success">File saat ini: <a href="{{ asset('storage/' . $dataPelanggan->cv_file) }}" target="_blank">Unduh CV</a></div>
+@endif
+@error('cv_file')
+    <div class="invalid-feedback">{{ $message }}</div>
+@enderror
 </div>
+</div>
+</div>
+
+<!-- Portofolio Visual & Social Details -->
+<div class="row mb-4">
+<div class="col-12"><h5 class="mb-3 border-bottom pb-2">Foto Portofolio & Banner</h5></div>
+<div class="col-md-6 mb-3">
+    <label for="profile_image" class="form-label">Foto Profil Portofolio</label>
+    @if($dataPelanggan->profile_image)
+        <div class="mb-2">
+            <img src="{{ asset('storage/' . $dataPelanggan->profile_image) }}" alt="Profile" class="rounded shadow-sm" style="max-height: 120px; object-fit: cover;">
+        </div>
+    @endif
+    <input type="file" id="profile_image" name="profile_image" class="form-control @error('profile_image') is-invalid @enderror" accept="image/*">
+    <div class="form-text">Format: JPG, PNG, WEBP (Max 4MB). Disarankan foto portrait seperti referensi.</div>
+    @error('profile_image')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+<div class="col-md-6 mb-3">
+    <label for="banner_image" class="form-label">Banner Image / Foto Sekunder</label>
+    @if($dataPelanggan->banner_image)
+        <div class="mb-2">
+            <img src="{{ asset('storage/' . $dataPelanggan->banner_image) }}" alt="Banner" class="rounded shadow-sm" style="max-height: 120px; object-fit: cover;">
+        </div>
+    @endif
+    <input type="file" id="banner_image" name="banner_image" class="form-control @error('banner_image') is-invalid @enderror" accept="image/*">
+    <div class="form-text">Foto pose tambahan untuk bagian "Hi There!" atau banner profil.</div>
+    @error('banner_image')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+<div class="col-12"><h5 class="mb-3 mt-3 border-bottom pb-2">Deskripsi & Tautan Sosial Media</h5></div>
+<div class="col-md-6 mb-3">
+    <label for="bio" class="form-label">Bio Singkat (Hero Section)</label>
+    <textarea id="bio" name="bio" rows="3" class="form-control @error('bio') is-invalid @enderror" placeholder="Deskripsi singkat yang tampil di hero section...">{{ old('bio', $dataPelanggan->bio) }}</textarea>
+    @error('bio')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+<div class="col-md-6 mb-3">
+    <label for="about" class="form-label">Tentang Saya (Need Creative Design?)</label>
+    <textarea id="about" name="about" rows="3" class="form-control @error('about') is-invalid @enderror" placeholder="Deskripsi lengkap layanan, pengalaman, dll...">{{ old('about', $dataPelanggan->about) }}</textarea>
+    @error('about')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+<div class="col-md-3 col-sm-6 mb-3">
+    <label for="behance_url" class="form-label">Behance URL / Username</label>
+    <input type="text" id="behance_url" name="behance_url" class="form-control @error('behance_url') is-invalid @enderror" placeholder="behance.net/username" value="{{ old('behance_url', $dataPelanggan->behance_url) }}">
+    @error('behance_url')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+<div class="col-md-3 col-sm-6 mb-3">
+    <label for="dribbble_url" class="form-label">Dribbble URL</label>
+    <input type="text" id="dribbble_url" name="dribbble_url" class="form-control @error('dribbble_url') is-invalid @enderror" placeholder="dribbble.com/username" value="{{ old('dribbble_url', $dataPelanggan->dribbble_url) }}">
+    @error('dribbble_url')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+<div class="col-md-3 col-sm-6 mb-3">
+    <label for="instagram_url" class="form-label">Instagram URL</label>
+    <input type="text" id="instagram_url" name="instagram_url" class="form-control @error('instagram_url') is-invalid @enderror" placeholder="instagram.com/username" value="{{ old('instagram_url', $dataPelanggan->instagram_url) }}">
+    @error('instagram_url')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+<div class="col-md-3 col-sm-6 mb-3">
+    <label for="linkedin_url" class="form-label">LinkedIn URL</label>
+    <input type="text" id="linkedin_url" name="linkedin_url" class="form-control @error('linkedin_url') is-invalid @enderror" placeholder="linkedin.com/in/username" value="{{ old('linkedin_url', $dataPelanggan->linkedin_url) }}">
+    @error('linkedin_url')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+</div>
+
+<div class="row">
+<div class="col-12">
+<button type="submit" class="btn btn-info">Simpan Perubahan</button>
+<a href="{{ route('pelanggan.show', $dataPelanggan->pelanggan_id) }}" class="btn btn-warning ms-2 text-dark">Lihat Portofolio</a>
+<a href="{{ route('pelanggan.index') }}" class="btn btn-outline-secondary ms-2">Batal</a>
 </div>
 </div>
 </form>
