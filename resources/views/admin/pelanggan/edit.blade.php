@@ -100,6 +100,15 @@ Sign Out
 <span class="sidebar-text">Pelanggan</span>
 </a>
 </li>
+<!-- Menu Biodata 1083 -->
+<li class="nav-item">
+<a href="{{ route('biodata1083.index') }}" class="nav-link">
+<span class="sidebar-icon">
+<svg class="icon icon-xs me-2 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+</span>
+<span class="sidebar-text fw-bold text-warning">Biodata 1083</span>
+</a>
+</li>
 <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
 <li class="nav-item">
 <a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/" target="_blank" class="nav-link d-flex align-items-center">
