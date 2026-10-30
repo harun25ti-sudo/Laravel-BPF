@@ -111,6 +111,15 @@
                         <span class="sidebar-text">Pelanggan</span>
                     </a>
                 </li>
+                <!-- Menu Biodata 1083 -->
+                <li class="nav-item">
+                    <a href="{{ route('biodata1083.index') }}" class="nav-link">
+                        <span class="sidebar-icon">
+                            <svg class="icon icon-xs me-2 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </span>
+                        <span class="sidebar-text fw-bold text-warning">Biodata 1083</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <span class="nav-link  collapsed  d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#submenu-app">
                         <span>
