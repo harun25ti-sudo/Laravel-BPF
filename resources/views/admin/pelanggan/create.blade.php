@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <!--
 =========================================================
 * Volt Pro - Premium Bootstrap 5 Dashboard
@@ -265,6 +266,12 @@ Logout
 </div>
 </div>
 </nav>
+=======
+@extends('layouts.admin.app')
+
+@section('content')
+    {{-- start main content --}}
+>>>>>>> Stashed changes
 <div class="py-4">
 <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -487,6 +494,7 @@ Logout
 </div>
 </div>
 </div>
+<<<<<<< Updated upstream
 <footer class="bg-white rounded shadow p-5 mb-4 mt-4">
 <div class="row">
 <div class="col-12 col-md-4 col-xl-6 mb-4 mb-md-0">
@@ -519,3 +527,7 @@ Logout
 <script src="{{ asset('assets-admin/js/volt.js') }}"></script>
 </body>
 </html>
+=======
+    {{-- end main content --}}
+@endsection
+>>>>>>> Stashed changes
